@@ -11,6 +11,12 @@ GLfloat rota = 0.0f;
 GLfloat rotb = 0.0f;
 GLfloat rotc = 0.0f;
 
+GLfloat animateRotaion = 0.0f;
+
+//Move the exvironment
+GLfloat moveX = 0.0f;
+GLfloat moveY = 0.0f;
+GLfloat moveZ = 0.0f;
 
 float posX = 0.01, posY = -0.1, posZ = 0,
 
@@ -28,12 +34,68 @@ void init() {
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_DEPTH_TEST);
     glLineWidth(1.0);
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glPolygonMode(GL_BACK, GL_FILL);
+}
+
+void Timer(int x) {
+    animateRotaion += animateRotaion >= 360.0 ? -animateRotaion : 5;
+    glutPostRedisplay();
+
+    glutTimerFunc(60, Timer, 1);
+}
+
+void DrawGrid() {
+    GLfloat ext = 20.0f;
+    GLfloat step = 1.0f;
+    GLfloat yGrid = -0.4f;
+    GLint line;
+
+    glBegin(GL_LINES);
+    glColor3f(1.0, 1.0, 1.0);
+
+    for (line = -ext; line <= ext; line += step) {
+        glVertex3f(line, yGrid, ext);
+        glVertex3f(line, yGrid, -ext);
+
+        glVertex3f(ext, yGrid, line);
+        glVertex3f(-ext, yGrid, line);
+    }
+    glEnd();
+
+}
+
+void drawAxes() {
+    glBegin(GL_LINES);
+
+    glColor3f(1.0, 0.0, 0.0);
+    glVertex3f(-20, 0, 0);
+    glVertex3f(20, 0, 0);
+
+    glColor3f(0.0, 1.0, 0.0);
+    glVertex3f(0, -20, 0);
+    glVertex3f(0, 20, 0);
+
+    glColor3f(0.0, 0.0, 1.0);
+    glVertex3f(0, 0, -20);
+    glVertex3f(0, 0, 20);
+
+    glEnd();
+
 }
 
 void ball() {
     glPushMatrix();
+    
+    glColor3f(0.0f, 1.0f, 1.0f);
+    glutSolidSphere(0.5, 100, 100);
+    glPopMatrix();
+}
+
+void pins() {
+    glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glutSolidSphere(0.25, 100, 100);
+    glutSolidCone(0.25, 100, 100, 50);
     glPopMatrix();
 }
 
@@ -94,12 +156,36 @@ void ball(float yloc)
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glRotatef(-30.0f, 1.0, 0.0, 0.0);
+    //
+    glRotatef(-30.0f, 0.0, 1.0, 0.0);
+    
+    glPushMatrix();
 
-    ball();
+    glTranslatef(moveX, moveY, moveZ);
+
+    //glRotatef(animateRotaion, 0.0, 1.0, 0.0);
+    //ball();
+    pins();
+    drawAxes();
+    DrawGrid();
+
+    glPopMatrix();
 
     glutSwapBuffers();
 
     glFlush();
+}
+
+void keyboardSpecial(int key, int x, int y) {
+    if (key == GLUT_KEY_UP) {
+        moveZ += 1;
+    }
+    if (key == GLUT_KEY_DOWN) {
+        moveZ -= 1;
+    }
+ 
+    glutPostRedisplay();
 }
 
 void display1() {
@@ -164,11 +250,18 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitWindowSize(500, 500);
     glutCreateWindow("Assignment 3");
-    glutPositionWindow(100, 100);
+    glutPositionWindow(150, 150);
+
     glutDisplayFunc(display);
+    
     //glutReshapeFunc(resize);
+
+    glutSpecialFunc(keyboardSpecial);
+    
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    //glutTimerFunc(20, Timer, 1);
+    
+    //glutTimerFunc(60.0, Timer, 1);
+    
     init();
     glutMainLoop();
 
