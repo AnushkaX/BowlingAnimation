@@ -23,11 +23,11 @@ GLfloat rotateX = 0.0f;
 GLfloat rotateY = 0.0f;
 GLfloat rotateZ = 0.0f;
 
-float posX = 0.01, posY = -0.1, posZ = 0,
+//Move cameras
+GLfloat camX = 0.0f;
+GLfloat camY = 0.0f;
+GLfloat camZ = 0.0f;
 
-bx1 = 0.01, by1 = 0.1,
-bx2 = 0.06, by2 = 0.1,
-bx3 = 0.10, by3 = 0.1;
 
 GLfloat rotation = 90.0;
 double x, y, angle;
@@ -100,29 +100,11 @@ void ball() {
 void pins() {
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glutSolidCone(0.25, 100, 100, 50);
+    glutSolidCone(0.25, 10, 100, 50);
     glPopMatrix();
 }
 
-void bottle() {
-    glColor3f(0.0, 0.0, 1.0);
-    glPointSize(9.0);
-    glBegin(GL_POINTS);
-    glVertex3f(bx1, by1, 0.0);
-    glEnd();
 
-    glBegin(GL_POINTS);
-    glVertex3f(bx2, by2, 0.0);
-
-    glEnd();
-    glBegin(GL_POINTS);
-    glVertex3f(bx3, by3, 0.0);
-
-    glEnd();
-
-    glFlush();
-
-}
 
 void circ() {
     glColor3f(1.0, 0.0, 1.0);
@@ -162,10 +144,12 @@ void ball(float yloc)
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glRotatef(-30.0f, 1.0, 0.0, 0.0);
-    //
     //glRotatef(-30.0f, 0.0, 1.0, 0.0);
     
     glPushMatrix();
+
+    //camera movements
+    gluLookAt(0.0 + camX, 2.0f + camY, 5.0f + camZ, 0, 0, 0, 0, 1.0, 0);
 
     //move the frame
     glTranslatef(moveX, moveY, moveZ);
@@ -204,6 +188,15 @@ void keyboardSpecial(int key, int x, int y) {
     glutPostRedisplay();
 }
 
+void keyBoadrd(unsigned char key, int x, int y) {
+    if (key == 'w')
+        camY += 0.5f;
+    if (key == 's')
+        camY -= 0.5;
+
+    glutPostRedisplay();
+}
+
 void changeSize(GLsizei w, GLsizei h) {
     glViewport(0, 0, w, h);
     GLfloat aspectRatio = h == 0 ? w / 1 : (GLfloat)w / (GLfloat)h;
@@ -217,33 +210,6 @@ void changeSize(GLsizei w, GLsizei h) {
     glLoadIdentity();
 }
 
-void display1() {
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPushMatrix();
-    glColor3f(1.0, 0.0, 0.0);
-
-    
-    glLoadIdentity();
-    gluOrtho2D(-1.0, 1.0, -1.0, 1.0);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glPushMatrix();
-    bottle();
-    glPopMatrix();
-
-    //drawSphere(5);
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(posX, posY, posZ);
-    circ();
-    glPopMatrix();
-    glutSwapBuffers();
-}
-
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitWindowSize(500, 500);
@@ -255,6 +221,7 @@ int main(int argc, char** argv) {
     glutReshapeFunc(changeSize);
 
     glutSpecialFunc(keyboardSpecial);
+    glutKeyboardFunc(keyBoadrd);
     
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     
