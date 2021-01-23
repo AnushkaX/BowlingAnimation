@@ -18,6 +18,11 @@ GLfloat moveX = 0.0f;
 GLfloat moveY = 0.0f;
 GLfloat moveZ = 0.0f;
 
+//Rotate the environment
+GLfloat rotateX = 0.0f;
+GLfloat rotateY = 0.0f;
+GLfloat rotateZ = 0.0f;
+
 float posX = 0.01, posY = -0.1, posZ = 0,
 
 bx1 = 0.01, by1 = 0.1,
@@ -158,13 +163,17 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glRotatef(-30.0f, 1.0, 0.0, 0.0);
     //
-    glRotatef(-30.0f, 0.0, 1.0, 0.0);
+    //glRotatef(-30.0f, 0.0, 1.0, 0.0);
     
     glPushMatrix();
 
+    //move the frame
     glTranslatef(moveX, moveY, moveZ);
 
-    //glRotatef(animateRotaion, 0.0, 1.0, 0.0);
+    glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
+    glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
+
     //ball();
     pins();
     drawAxes();
@@ -184,8 +193,28 @@ void keyboardSpecial(int key, int x, int y) {
     if (key == GLUT_KEY_DOWN) {
         moveZ -= 1;
     }
+
+    if (key == GLUT_KEY_LEFT) {
+        rotateY += 5;
+    }
+    if (key == GLUT_KEY_RIGHT) {
+        rotateY -= 5;
+    }
  
     glutPostRedisplay();
+}
+
+void changeSize(GLsizei w, GLsizei h) {
+    glViewport(0, 0, w, h);
+    GLfloat aspectRatio = h == 0 ? w / 1 : (GLfloat)w / (GLfloat)h;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    gluPerspective(120.0, aspectRatio, 1.0, 100.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 void display1() {
@@ -215,37 +244,6 @@ void display1() {
     glutSwapBuffers();
 }
 
-float move_unit = 0.02f;
-void keyboardown(int key, int x, int y) {
-    switch (key) {
-    case GLUT_KEY_RIGHT:
-        posX += move_unit;
-        break;
-    case GLUT_KEY_LEFT:
-        posX -= move_unit;
-        break;
-    case GLUT_KEY_UP:
-        posY += move_unit;
-        break;
-    case GLUT_KEY_DOWN:
-        posY -= move_unit;
-        break;
-    default:
-        break;
-    }
-    if (posX == bx1 || posX == bx2) {
-
-        bx1 -= 0.02, by1 += 0.06;
-        bx2 = 0.02,
-            by2 += 0.08;
-        bx3 = 0.04,
-            by3 += 0.04;
-
-    }
-
-    glutPostRedisplay();
-}
-
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitWindowSize(500, 500);
@@ -254,7 +252,7 @@ int main(int argc, char** argv) {
 
     glutDisplayFunc(display);
     
-    //glutReshapeFunc(resize);
+    glutReshapeFunc(changeSize);
 
     glutSpecialFunc(keyboardSpecial);
     
