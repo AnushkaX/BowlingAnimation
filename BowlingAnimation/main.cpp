@@ -91,8 +91,8 @@ void drawAxes() {
 
 void ball() {
     glPushMatrix();
-    
     glColor3f(0.0f, 1.0f, 1.0f);
+    glTranslatef(0.0, 0.5, 0.0);
     glutSolidSphere(0.5, 100, 100);
     glPopMatrix();
 }
@@ -100,7 +100,23 @@ void ball() {
 void pins() {
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glutSolidCone(0.25, 10, 100, 50);
+    glTranslatef(0.0, 0.0, -4.0);
+    glRotatef(-90.0f, 1.0, 0.0, 0.0);
+    glutSolidCone(0.25, 2.0, 20, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 1.0f);
+    glTranslatef(1.0, 0.0, -4.0);
+    glRotatef(-90.0f, 1.0, 0.0, 0.0);
+    glutSolidCone(0.25, 2.0, 20, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 1.0f);
+    glTranslatef(-1.0, 0.0, -4.0);
+    glRotatef(-90.0f, 1.0, 0.0, 0.0);
+    glutSolidCone(0.25, 2.0, 20, 50);
     glPopMatrix();
 }
 
@@ -158,7 +174,7 @@ void display() {
     glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
     glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
 
-    //ball();
+    ball();
     pins();
     drawAxes();
     DrawGrid();
