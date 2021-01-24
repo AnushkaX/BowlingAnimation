@@ -18,11 +18,16 @@ GLfloat moveX = 0.0f;
 GLfloat moveY = 0.0f;
 GLfloat moveZ = 0.0f;
 
-float posX = 0.01, posY = -0.1, posZ = 0,
+//Rotate the environment
+GLfloat rotateX = 0.0f;
+GLfloat rotateY = 0.0f;
+GLfloat rotateZ = 0.0f;
 
-bx1 = 0.01, by1 = 0.1,
-bx2 = 0.06, by2 = 0.1,
-bx3 = 0.10, by3 = 0.1;
+//Move cameras
+GLfloat camX = 0.0f;
+GLfloat camY = 0.0f;
+GLfloat camZ = 0.0f;
+
 
 GLfloat rotation = 90.0;
 double x, y, angle;
@@ -86,8 +91,8 @@ void drawAxes() {
 
 void ball() {
     glPushMatrix();
-    
     glColor3f(0.0f, 1.0f, 1.0f);
+    glTranslatef(0.0, 0.5, 0.0);
     glutSolidSphere(0.5, 100, 100);
     glPopMatrix();
 }
@@ -95,29 +100,27 @@ void ball() {
 void pins() {
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glutSolidCone(0.25, 100, 100, 50);
+    glTranslatef(0.0, 0.0, -4.0);
+    glRotatef(-90.0f, 1.0, 0.0, 0.0);
+    glutSolidCone(0.25, 2.0, 20, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 1.0f);
+    glTranslatef(1.0, 0.0, -4.0);
+    glRotatef(-90.0f, 1.0, 0.0, 0.0);
+    glutSolidCone(0.25, 2.0, 20, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1.0f, 0.0f, 1.0f);
+    glTranslatef(-1.0, 0.0, -4.0);
+    glRotatef(-90.0f, 1.0, 0.0, 0.0);
+    glutSolidCone(0.25, 2.0, 20, 50);
     glPopMatrix();
 }
 
-void bottle() {
-    glColor3f(0.0, 0.0, 1.0);
-    glPointSize(9.0);
-    glBegin(GL_POINTS);
-    glVertex3f(bx1, by1, 0.0);
-    glEnd();
 
-    glBegin(GL_POINTS);
-    glVertex3f(bx2, by2, 0.0);
-
-    glEnd();
-    glBegin(GL_POINTS);
-    glVertex3f(bx3, by3, 0.0);
-
-    glEnd();
-
-    glFlush();
-
-}
 
 void circ() {
     glColor3f(1.0, 0.0, 1.0);
@@ -157,15 +160,21 @@ void ball(float yloc)
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glRotatef(-30.0f, 1.0, 0.0, 0.0);
-    //
-    glRotatef(-30.0f, 0.0, 1.0, 0.0);
+    //glRotatef(-30.0f, 0.0, 1.0, 0.0);
     
     glPushMatrix();
 
+    //camera movements
+    gluLookAt(0.0 + camX, 2.0f + camY, 5.0f + camZ, 0, 0, 0, 0, 1.0, 0);
+
+    //move the frame
     glTranslatef(moveX, moveY, moveZ);
 
-    //glRotatef(animateRotaion, 0.0, 1.0, 0.0);
-    //ball();
+    glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
+    glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
+
+    ball();
     pins();
     drawAxes();
     DrawGrid();
@@ -184,66 +193,37 @@ void keyboardSpecial(int key, int x, int y) {
     if (key == GLUT_KEY_DOWN) {
         moveZ -= 1;
     }
+
+    if (key == GLUT_KEY_LEFT) {
+        rotateY += 5;
+    }
+    if (key == GLUT_KEY_RIGHT) {
+        rotateY -= 5;
+    }
  
     glutPostRedisplay();
 }
 
-void display1() {
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPushMatrix();
-    glColor3f(1.0, 0.0, 0.0);
+void keyBoadrd(unsigned char key, int x, int y) {
+    if (key == 'w')
+        camY += 0.5f;
+    if (key == 's')
+        camY -= 0.5;
 
-    
+    glutPostRedisplay();
+}
+
+void changeSize(GLsizei w, GLsizei h) {
+    glViewport(0, 0, w, h);
+    GLfloat aspectRatio = h == 0 ? w / 1 : (GLfloat)w / (GLfloat)h;
+
+    glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(-1.0, 1.0, -1.0, 1.0);
+
+    gluPerspective(120.0, aspectRatio, 1.0, 100.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
-    glPushMatrix();
-    bottle();
-    glPopMatrix();
-
-    //drawSphere(5);
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(posX, posY, posZ);
-    circ();
-    glPopMatrix();
-    glutSwapBuffers();
-}
-
-float move_unit = 0.02f;
-void keyboardown(int key, int x, int y) {
-    switch (key) {
-    case GLUT_KEY_RIGHT:
-        posX += move_unit;
-        break;
-    case GLUT_KEY_LEFT:
-        posX -= move_unit;
-        break;
-    case GLUT_KEY_UP:
-        posY += move_unit;
-        break;
-    case GLUT_KEY_DOWN:
-        posY -= move_unit;
-        break;
-    default:
-        break;
-    }
-    if (posX == bx1 || posX == bx2) {
-
-        bx1 -= 0.02, by1 += 0.06;
-        bx2 = 0.02,
-            by2 += 0.08;
-        bx3 = 0.04,
-            by3 += 0.04;
-
-    }
-
-    glutPostRedisplay();
 }
 
 int main(int argc, char** argv) {
@@ -254,9 +234,10 @@ int main(int argc, char** argv) {
 
     glutDisplayFunc(display);
     
-    //glutReshapeFunc(resize);
+    glutReshapeFunc(changeSize);
 
     glutSpecialFunc(keyboardSpecial);
+    glutKeyboardFunc(keyBoadrd);
     
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     
