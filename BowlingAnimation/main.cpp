@@ -120,7 +120,20 @@ void pins() {
     glPopMatrix();
 }
 
+void floor() {
+    //glLineWidth(12.0);
 
+    glBegin(GL_QUADS);
+
+    glColor4f(1.0, 1.0, 0.0, 0.0);
+
+    glVertex3f(-2, 0, -10);
+    glVertex3f(-2, 0, 1);
+    glVertex3f(2, 0, 1);
+    glVertex3f(2, 0, -10);
+
+    glEnd();
+}
 
 void circ() {
     glColor3f(1.0, 0.0, 1.0);
@@ -134,32 +147,10 @@ void circ() {
     glEnd();
 }
 
-void ball(float yloc)
-{
-    int b;
-    static float balls[100][3];
-    static short first = true;
-
-    if (first) {            // Initialize 100 spheres with random x,y coordinates.
-        first = false;
-        for (b = 0; b < 100; b++) {
-            balls[b][0] = float(rand() % 50 - 25) / 10.0;
-            balls[b][1] = float(rand() % 50 - 25) / 10.0;
-            balls[b][2] = 0.0;
-        }
-    }
-
-    for (b = 0; b < 100; b++) {    // Translate balls towards and away from front plane.
-        glPushMatrix();
-        glTranslatef(balls[b][0], balls[b][1], yloc);
-        glutSolidSphere(0.2, 20, 50);
-        glPopMatrix();
-    }
-}
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glRotatef(-30.0f, 1.0, 0.0, 0.0);
+    //glRotatef(180.0, 0.0, 1.0, 0.0);
     //glRotatef(-30.0f, 0.0, 1.0, 0.0);
     
     glPushMatrix();
@@ -174,8 +165,10 @@ void display() {
     glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
     glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
 
+    floor();
     ball();
     pins();
+    
     drawAxes();
     DrawGrid();
 
