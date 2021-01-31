@@ -100,21 +100,21 @@ void ball() {
 void pins() {
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glTranslatef(0.0, 0.0, -4.0);
+    glTranslatef(0.0, 0.0, -9.0);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
     glutSolidCone(0.25, 2.0, 20, 50);
     glPopMatrix();
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glTranslatef(1.0, 0.0, -4.0);
+    glTranslatef(1.0, 0.0, -9.0);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
     glutSolidCone(0.25, 2.0, 20, 50);
     glPopMatrix();
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glTranslatef(-1.0, 0.0, -4.0);
+    glTranslatef(-1.0, 0.0, -9.0);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
     glutSolidCone(0.25, 2.0, 20, 50);
     glPopMatrix();
