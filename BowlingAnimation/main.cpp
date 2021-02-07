@@ -100,9 +100,11 @@ void ball() {
 void pins() {
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glTranslatef(0.0, 0.0, -9.0);
+    glTranslatef(0.0, 2.0, -9.0);
+    glRotatef(0, 0, 1, 0);
+    glScalef(1, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    glutSolidCone(0.25, 2.0, 20, 50);
+    glutSolidSphere(1.0, 50, 50);
     glPopMatrix();
 
     glPushMatrix();
@@ -202,6 +204,10 @@ void keyBoadrd(unsigned char key, int x, int y) {
         camY += 0.5f;
     if (key == 's')
         camY -= 0.5;
+    if (key == 'a')
+        camX += 0.5f;
+    if (key == 'd')
+        camX -= 0.5;
 
     glutPostRedisplay();
 }
