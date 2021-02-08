@@ -100,7 +100,11 @@ void ball() {
 void pins() {
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glTranslatef(0.0, 2.0, -9.0);
+    GLdouble plane[] = { 0, 1.1, 0, 0 };
+    glClipPlane(GL_CLIP_PLANE0, plane);
+    glEnable(GL_CLIP_PLANE0);
+    glTranslatef(0, 0, 0.2);
+    glTranslatef(0.0, 1.5, -9.0);
     glRotatef(0, 0, 1, 0);
     glScalef(1, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
@@ -168,11 +172,14 @@ void display() {
     glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
 
     floor();
-    ball();
-    pins();
-    
+
     drawAxes();
+    
     DrawGrid();
+    
+    ball();
+    
+    pins();
 
     glPopMatrix();
 
