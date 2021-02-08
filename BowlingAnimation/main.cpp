@@ -100,29 +100,44 @@ void ball() {
 void pins() {
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    GLdouble plane[] = { 0, 1.1, 0, 0 };
-    glClipPlane(GL_CLIP_PLANE0, plane);
+    GLdouble plane1[] = { 0, 1.1, 0, 0 };
+    glClipPlane(GL_CLIP_PLANE0, plane1);
     glEnable(GL_CLIP_PLANE0);
     glTranslatef(0, 0, 0.2);
-    glTranslatef(0.0, 1.5, -9.0);
+    glTranslatef(0.0, 0.75, -9.0);
     glRotatef(0, 0, 1, 0);
     glScalef(1, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    glutSolidSphere(1.0, 50, 50);
+    glutSolidSphere(0.5, 20, 20);
+    glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glTranslatef(1.0, 0.0, -9.0);
+    GLdouble plane2[] = { 0, 1.1, 0, 0 };
+    glClipPlane(GL_CLIP_PLANE0, plane2);
+    glEnable(GL_CLIP_PLANE0);
+    glTranslatef(0, 0, 0.2);
+    glTranslatef(1.0, 0.75, -9.0);
+    glRotatef(0, 0, 1, 0);
+    glScalef(1, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    glutSolidCone(0.25, 2.0, 20, 50);
+    glutSolidSphere(0.5, 20, 20);
+    glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    glTranslatef(-1.0, 0.0, -9.0);
+    GLdouble plane3[] = { 0, 1.1, 0, 0 };
+    glClipPlane(GL_CLIP_PLANE0, plane3);
+    glEnable(GL_CLIP_PLANE0);
+    glTranslatef(0, 0, 0.2);
+    glTranslatef(-1.0, 0.75, -9.0);
+    glRotatef(0, 0, 1, 0);
+    glScalef(1, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    glutSolidCone(0.25, 2.0, 20, 50);
+    glutSolidSphere(0.5, 20, 20);
+    glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
 }
 
@@ -173,7 +188,7 @@ void display() {
 
     floor();
 
-    drawAxes();
+    //drawAxes();
     
     DrawGrid();
     
