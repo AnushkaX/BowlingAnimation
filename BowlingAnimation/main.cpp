@@ -42,6 +42,8 @@ GLint circle_points = 50;
 
 using namespace std;
 
+GLUquadric* sphere;
+
 struct BitMapFile
 {
     int sizeX;
