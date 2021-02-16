@@ -153,10 +153,10 @@ void floor() {
 
     glColor4f(1.0, 1.0, 0.0, 0.0);
 
-    glVertex3f(-2, 0, -12);
-    glVertex3f(-2, 0, 1);
-    glVertex3f(2, 0, 1);
-    glVertex3f(2, 0, -12);
+    glVertex3f(-10, 0, -20);
+    glVertex3f(-10, 0, 1);
+    glVertex3f(10, 0, 1);
+    glVertex3f(10, 0, -20);
 
     glEnd();
 }
