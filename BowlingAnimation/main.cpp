@@ -9,7 +9,8 @@
 #define PI 3.1415926535898
 #define PIN 0
 #define FLOOR 1
-#define TEXTURE_COUNT 2
+#define BALL 2
+#define TEXTURE_COUNT 3
 
 GLfloat windowW = 20;
 GLfloat windowH = 20;
@@ -113,6 +114,7 @@ void loadExternalTextures()
     BitMapFile* image[TEXTURE_COUNT];
     image[PIN] = getbmp("Textures/pin.bmp");
     image[FLOOR] = getbmp("Textures/floor.bmp");
+    image[BALL] = getbmp("Textures/ball.bmp");
 
     for (int i = 0; i < TEXTURE_COUNT; i++) {
         glBindTexture(GL_TEXTURE_2D, texture[i]);
@@ -131,8 +133,6 @@ void init() {
 
     glGenTextures(TEXTURE_COUNT, texture);
     loadExternalTextures();
-    
-    qobj = gluNewQuadric();
     
     glLineWidth(1.0);
     glPolygonMode(GL_FRONT, GL_FILL);
@@ -191,7 +191,15 @@ void ball() {
     glPushMatrix();
     glColor3f(0.0f, 1.0f, 1.0f);
     glTranslatef(0.0, 0.5, 0.0);
-    glutSolidSphere(0.5, 100, 100);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture[BALL]);
+
+    GLUquadric* qobj = gluNewQuadric();
+    gluQuadricTexture(qobj, GL_TRUE);
+    gluSphere(qobj, 1, 20, 20);
+    gluDeleteQuadric(qobj);
+
+    glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 
