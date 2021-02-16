@@ -206,7 +206,7 @@ void ball() {
 void drawPin(GLfloat x, GLfloat y, GLfloat z) {
 
     glPushMatrix();
-    glColor3f(1.0f, 0.0f, 1.0f);
+    glColor3f(1.0f, 1.0f, 1.0f);
     GLdouble plane1[] = { 0, 1.1, 0, 0 };
     glClipPlane(GL_CLIP_PLANE0, plane1);
     glEnable(GL_CLIP_PLANE0);
@@ -215,7 +215,13 @@ void drawPin(GLfloat x, GLfloat y, GLfloat z) {
     glRotatef(0, 0, 1, 0);
     glScalef(0.9, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    glutSolidSphere(0.5, 20, 20);
+    //glutSolidSphere(0.5, 20, 20);
+    
+    GLUquadric* qobj = gluNewQuadric();
+    gluQuadricTexture(qobj, GL_TRUE);
+    gluSphere(qobj, 0.5, 20, 20);
+    //gluDeleteQuadric(qobj);
+    
     glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
 
@@ -228,7 +234,16 @@ void drawPin(GLfloat x, GLfloat y, GLfloat z) {
     glRotatef(0, 0, 1, 0);
     glScalef(0.8, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    glutSolidSphere(0.3, 20, 20);
+    //glutSolidSphere(0.3, 20, 20);
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture[PIN]);
+
+    gluQuadricTexture(qobj, GL_TRUE);
+    gluSphere(qobj, 0.3, 20, 20);
+    gluDeleteQuadric(qobj);
+
+    glDisable(GL_TEXTURE_2D);
     glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
 
