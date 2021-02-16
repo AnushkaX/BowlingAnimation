@@ -1,9 +1,15 @@
 #include <stdlib.h>
-#include <GL/glut.h>
-#include <cmath>
-#include <stdio.h>
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <math.h>
+#include <time.h> 
+#include <GL/glut.h>
+
 #define PI 3.1415926535898
+#define PIN 0
+#define FLOOR 1
+#define TEXTURE_COUNT 2
 
 GLfloat windowW = 20;
 GLfloat windowH = 20;
@@ -34,13 +40,103 @@ double x, y, angle;
 
 GLint circle_points = 50;
 
+using namespace std;
+
+struct BitMapFile
+{
+    int sizeX;
+    int sizeY;
+    unsigned char* data;
+};
+
+static unsigned int texture[TEXTURE_COUNT];
+
+GLUquadricObj* qobj;
+
+BitMapFile* getbmp(string filename)
+{
+    int offset, headerSize;
+
+    BitMapFile* bmpRGB = new BitMapFile;
+    BitMapFile* bmpRGBA = new BitMapFile;
+
+    ifstream infile(filename.c_str(), ios::binary);
+
+    infile.seekg(10);
+    infile.read((char*)&offset, 4);
+
+    infile.read((char*)&headerSize, 4);
+
+    infile.seekg(18);
+    infile.read((char*)&bmpRGB->sizeX, 4);
+    infile.read((char*)&bmpRGB->sizeY, 4);
+
+    int padding = (3 * bmpRGB->sizeX) % 4 ? 4 - (3 * bmpRGB->sizeX) % 4 : 0;
+    int sizeScanline = 3 * bmpRGB->sizeX + padding;
+    int sizeStorage = sizeScanline * bmpRGB->sizeY;
+    bmpRGB->data = new unsigned char[sizeStorage];
+
+    infile.seekg(offset);
+    infile.read((char*)bmpRGB->data, sizeStorage);
+
+    int startScanline, endScanlineImageData, temp;
+    for (int y = 0; y < bmpRGB->sizeY; y++)
+    {
+        startScanline = y * sizeScanline;
+        endScanlineImageData = startScanline + 3 * bmpRGB->sizeX;
+        for (int x = startScanline; x < endScanlineImageData; x += 3)
+        {
+            temp = bmpRGB->data[x];
+            bmpRGB->data[x] = bmpRGB->data[x + 2];
+            bmpRGB->data[x + 2] = temp;
+        }
+    }
+
+    bmpRGBA->sizeX = bmpRGB->sizeX;
+    bmpRGBA->sizeY = bmpRGB->sizeY;
+    bmpRGBA->data = new unsigned char[4 * bmpRGB->sizeX * bmpRGB->sizeY];
+
+    for (int j = 0; j < 4 * bmpRGB->sizeY * bmpRGB->sizeX; j += 4)
+    {
+        bmpRGBA->data[j] = bmpRGB->data[(j / 4) * 3];
+        bmpRGBA->data[j + 1] = bmpRGB->data[(j / 4) * 3 + 1];
+        bmpRGBA->data[j + 2] = bmpRGB->data[(j / 4) * 3 + 2];
+        bmpRGBA->data[j + 3] = 0xFF;
+    }
+    return bmpRGBA;
+}
+
+void loadExternalTextures()
+{
+    BitMapFile* image[TEXTURE_COUNT];
+    image[PIN] = getbmp("Textures/pin.bmp");
+    image[FLOOR] = getbmp("Textures/floor.bmp");
+
+    for (int i = 0; i < TEXTURE_COUNT; i++) {
+        glBindTexture(GL_TEXTURE_2D, texture[i]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image[i]->sizeX, image[i]->sizeY, 0, GL_RGBA, GL_UNSIGNED_BYTE, image[i]->data);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
+}
+
 void init() {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glEnable(GL_DEPTH_TEST);
+
+    glGenTextures(TEXTURE_COUNT, texture);
+    loadExternalTextures();
+    
+    qobj = gluNewQuadric();
+    
     glLineWidth(1.0);
     glPolygonMode(GL_FRONT, GL_FILL);
     glPolygonMode(GL_BACK, GL_FILL);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 void Timer(int x) {
@@ -125,9 +221,12 @@ void drawPin(GLfloat x, GLfloat y, GLfloat z) {
     glutSolidSphere(0.3, 20, 20);
     glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
+
 }
 
 void pins() {
+
+    glPushMatrix();
 
     drawPin(0, 0.75, -10);
 
@@ -143,34 +242,27 @@ void pins() {
     drawPin(-2.4, 0.75, -13);
     drawPin(2.4, 0.75, -13);
     
-
+    glPopMatrix();
 }
 
 void floor() {
-    //glLineWidth(12.0);
+    
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, texture[FLOOR]);
 
     glBegin(GL_QUADS);
 
-    glColor4f(1.0, 1.0, 0.0, 0.0);
+    //glColor4f(1.0, 1.0, 0.0, 0.0);
 
-    glVertex3f(-10, 0, -20);
-    glVertex3f(-10, 0, 1);
-    glVertex3f(10, 0, 1);
-    glVertex3f(10, 0, -20);
+    glTexCoord2f(0.0, 0.0); glVertex3f(-10, 0, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-10, 0, 1);
+    glTexCoord2f(1.0, 1.0); glVertex3f(10, 0, 1);
+    glTexCoord2f(0.0, 1.0); glVertex3f(10, 0, -20);
 
     glEnd();
-}
 
-void circ() {
-    glColor3f(1.0, 0.0, 1.0);
-    glBegin(GL_TRIANGLE_FAN);
-    for (int i = 0; i <= 300; i++) {
-        angle = 2 * PI * i / 300;
-        x = cos(angle) / 20;
-        y = sin(angle) / 20;
-        glVertex2d(x, y);
-    }
-    glEnd();
+    glDisable(GL_TEXTURE_2D);
 }
 
 
@@ -193,7 +285,7 @@ void display() {
 
     floor();
 
-    //drawAxes();
+    drawAxes();
     
     DrawGrid();
     
