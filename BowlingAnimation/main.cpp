@@ -97,16 +97,17 @@ void ball() {
     glPopMatrix();
 }
 
-void pins() {
+void drawPin(GLfloat x, GLfloat y, GLfloat z) {
+
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
     GLdouble plane1[] = { 0, 1.1, 0, 0 };
     glClipPlane(GL_CLIP_PLANE0, plane1);
     glEnable(GL_CLIP_PLANE0);
     glTranslatef(0, 0, 0.2);
-    glTranslatef(0.0, 0.75, -9.0);
+    glTranslatef(x, y, z);
     glRotatef(0, 0, 1, 0);
-    glScalef(1, 1.75, 1);
+    glScalef(0.9, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
     glutSolidSphere(0.5, 20, 20);
     glDisable(GL_CLIP_PLANE0);
@@ -114,31 +115,35 @@ void pins() {
 
     glPushMatrix();
     glColor3f(1.0f, 0.0f, 1.0f);
-    GLdouble plane2[] = { 0, 1.1, 0, 0 };
-    glClipPlane(GL_CLIP_PLANE0, plane2);
+    glClipPlane(GL_CLIP_PLANE0, plane1);
     glEnable(GL_CLIP_PLANE0);
     glTranslatef(0, 0, 0.2);
-    glTranslatef(1.0, 0.75, -9.0);
+    glTranslatef(x, y + 1.05, z);
     glRotatef(0, 0, 1, 0);
-    glScalef(1, 1.75, 1);
+    glScalef(0.8, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    glutSolidSphere(0.5, 20, 20);
+    glutSolidSphere(0.3, 20, 20);
     glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
+}
 
-    glPushMatrix();
-    glColor3f(1.0f, 0.0f, 1.0f);
-    GLdouble plane3[] = { 0, 1.1, 0, 0 };
-    glClipPlane(GL_CLIP_PLANE0, plane3);
-    glEnable(GL_CLIP_PLANE0);
-    glTranslatef(0, 0, 0.2);
-    glTranslatef(-1.0, 0.75, -9.0);
-    glRotatef(0, 0, 1, 0);
-    glScalef(1, 1.75, 1);
-    glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    glutSolidSphere(0.5, 20, 20);
-    glDisable(GL_CLIP_PLANE0);
-    glPopMatrix();
+void pins() {
+
+    drawPin(0, 0.75, -10);
+
+    drawPin(0.8, 0.75, -11);
+    drawPin(-0.8, 0.75, -11);
+    
+    drawPin(0, 0.75, -12);
+    drawPin(1.6, 0.75, -12);
+    drawPin(-1.6, 0.75, -12);
+    
+    drawPin(0.8, 0.75, -13);
+    drawPin(-0.8, 0.75, -13);
+    drawPin(-2.4, 0.75, -13);
+    drawPin(2.4, 0.75, -13);
+    
+
 }
 
 void floor() {
@@ -148,10 +153,10 @@ void floor() {
 
     glColor4f(1.0, 1.0, 0.0, 0.0);
 
-    glVertex3f(-2, 0, -10);
+    glVertex3f(-2, 0, -12);
     glVertex3f(-2, 0, 1);
     glVertex3f(2, 0, 1);
-    glVertex3f(2, 0, -10);
+    glVertex3f(2, 0, -12);
 
     glEnd();
 }
