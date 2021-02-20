@@ -9,8 +9,11 @@
 #define PI 3.1415926535898
 #define PIN 0
 #define FLOOR 1
-#define BALL 2
-#define TEXTURE_COUNT 3
+#define FLOOR1 2
+#define BALL 3
+#define SIDES 4
+#define FLOOR_LINE 5
+#define TEXTURE_COUNT 6
 
 GLfloat windowW = 20;
 GLfloat windowH = 20;
@@ -114,7 +117,10 @@ void loadExternalTextures()
     BitMapFile* image[TEXTURE_COUNT];
     image[PIN] = getbmp("Textures/pin.bmp");
     image[FLOOR] = getbmp("Textures/floor.bmp");
+    image[FLOOR1] = getbmp("Textures/floor2.bmp");
     image[BALL] = getbmp("Textures/ball.bmp");
+    image[SIDES] = getbmp("Textures/sides.bmp");
+    image[FLOOR_LINE] = getbmp("Textures/floor_line.bmp");
 
     for (int i = 0; i < TEXTURE_COUNT; i++) {
         glBindTexture(GL_TEXTURE_2D, texture[i]);
@@ -190,7 +196,8 @@ void drawAxes() {
 void ball() {
     glPushMatrix();
     glColor3f(0.0f, 1.0f, 1.0f);
-    glTranslatef(0.0, 0.5, 0.0);
+    glTranslatef(0.0, 1, 12.0);
+    glRotatef(-90.0f, 1.0, 0.0, 0.0);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[BALL]);
 
@@ -272,6 +279,69 @@ void pins() {
 
 void floor() {
     
+    //Arena
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture[FLOOR]);
+
+    glBegin(GL_QUADS);
+    
+    glTexCoord2f(0.0, 0.0); glVertex3f(-7, 0.001, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-7, 0.001, 15);
+    glTexCoord2f(1.0, 1.0); glVertex3f(7, 0.001, 15);
+    glTexCoord2f(0.0, 1.0); glVertex3f(7, 0.001, -20);
+
+    glEnd();
+
+    //Sides
+    glBindTexture(GL_TEXTURE_2D, texture[SIDES]);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(-9, 0.001, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-9, 0.001, 15);
+    glTexCoord2f(1.0, 1.0); glVertex3f(-7, 0.001, 15);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-7, 0.001, -20);
+
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, texture[SIDES]);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(7, 0.001, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(7, 0.001, 15);
+    glTexCoord2f(1.0, 1.0); glVertex3f(9, 0.001, 15);
+    glTexCoord2f(0.0, 1.0); glVertex3f(9, 0.001, -20);
+
+    glEnd();
+
+    //Floor
+    glBindTexture(GL_TEXTURE_2D, texture[FLOOR1]);
+    glBegin(GL_QUADS);
+    
+    glTexCoord2f(0.0, 0.0); glVertex3f(-20, 0, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-20, 0, 20);
+    glTexCoord2f(1.0, 1.0); glVertex3f(20, 0, 20);
+    glTexCoord2f(0.0, 1.0); glVertex3f(20, 0, -20);
+
+    glEnd();
+
+    //Floor_Line
+    glBindTexture(GL_TEXTURE_2D, texture[FLOOR_LINE]);
+    glBegin(GL_QUADS);
+    
+    glTexCoord2f(0.0, 0.0); glVertex3f(-7, 0.01, 10);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-7, 0.01, 10.3);
+    glTexCoord2f(1.0, 1.0); glVertex3f(7, 0.01, 10.3);
+    glTexCoord2f(0.0, 1.0); glVertex3f(7, 0.01, 10);
+
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+}
+
+void wall() {
+
     glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, texture[FLOOR]);
@@ -280,10 +350,10 @@ void floor() {
 
     //glColor4f(1.0, 1.0, 0.0, 0.0);
 
-    glTexCoord2f(0.0, 0.0); glVertex3f(-10, 0, -20);
-    glTexCoord2f(1.0, 0.0); glVertex3f(-10, 0, 1);
-    glTexCoord2f(1.0, 1.0); glVertex3f(10, 0, 1);
-    glTexCoord2f(0.0, 1.0); glVertex3f(10, 0, -20);
+    glTexCoord2f(0.0, 0.0); glVertex3f(-20, 20, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-20, 0, -20);
+    glTexCoord2f(1.0, 1.0); glVertex3f(20, 0, -20);
+    glTexCoord2f(0.0, 1.0); glVertex3f(20, 20, -20);
 
     glEnd();
 
@@ -309,6 +379,8 @@ void display() {
     glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
 
     floor();
+
+    //wall();
 
     drawAxes();
     
@@ -371,8 +443,8 @@ void changeSize(GLsizei w, GLsizei h) {
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
-    glutInitWindowSize(500, 500);
-    glutCreateWindow("Assignment 3");
+    glutInitWindowSize(600, 600);
+    glutCreateWindow("Bowling Animation");
     glutPositionWindow(150, 150);
 
     glutDisplayFunc(display);
