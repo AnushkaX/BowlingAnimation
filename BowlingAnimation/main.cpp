@@ -23,6 +23,8 @@ GLfloat rotc = 0.0f;
 
 GLfloat animateRotaion = 0.0f;
 
+GLfloat ballz = 10.0f;
+
 //Move the exvironment
 GLfloat moveX = 0.0f;
 GLfloat moveY = 0.0f;
@@ -148,7 +150,11 @@ void init() {
 }
 
 void Timer(int x) {
-    animateRotaion += animateRotaion >= 360.0 ? -animateRotaion : 5;
+    //animateRotaion += animateRotaion >= 360.0 ? -animateRotaion : 5;
+    if (ballz >= -8.0) {
+        ballz = ballz - 1;
+    }
+    
     glutPostRedisplay();
 
     glutTimerFunc(60, Timer, 1);
@@ -196,7 +202,7 @@ void drawAxes() {
 void ball() {
     glPushMatrix();
     glColor3f(0.0f, 1.0f, 1.0f);
-    glTranslatef(0.0, 1, 12.0);
+    glTranslatef(0.0, 1, ballz);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[BALL]);
@@ -442,9 +448,13 @@ void changeSize(GLsizei w, GLsizei h) {
 }
 
 int main(int argc, char** argv) {
+
     glutInit(&argc, argv);
+
     glutInitWindowSize(600, 600);
+
     glutCreateWindow("Bowling Animation");
+
     glutPositionWindow(150, 150);
 
     glutDisplayFunc(display);
@@ -452,11 +462,12 @@ int main(int argc, char** argv) {
     glutReshapeFunc(changeSize);
 
     glutSpecialFunc(keyboardSpecial);
+
     glutKeyboardFunc(keyBoadrd);
     
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     
-    //glutTimerFunc(60.0, Timer, 1);
+    glutTimerFunc(60.0, Timer, 1);
     
     init();
     glutMainLoop();
