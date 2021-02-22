@@ -25,6 +25,8 @@ GLfloat rotc = 0.0f;
 
 GLfloat flag = 0.0;
 
+GLfloat ballrotz = 0.0;
+
 GLfloat animateRotaion = 0.0f;
 
 GLfloat ballx = 0.0f;
@@ -160,7 +162,14 @@ void Timer(int x) {
         if (ballz >= -8.0) {
             ballz = ballz - 1;
         }
+        if (ballrotz >= -360.0) {
+            cout << ballrotz;
+            ballrotz -= 20;
+        }
+        
+
     }
+    
     
     
     glutPostRedisplay();
@@ -212,6 +221,7 @@ void ball() {
     glColor3f(0.0f, 1.0f, 1.0f);
     glTranslatef(ballx, 1, ballz);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
+    glRotatef(ballrotz, 1.0, 0.0, 0.0);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[BALL]);
 
