@@ -15,13 +15,20 @@
 #define FLOOR_LINE 5
 #define TEXTURE_COUNT 6
 
+#define SPACEBAR 32
+
 GLfloat windowW = 20;
 GLfloat windowH = 20;
 GLfloat rota = 0.0f;
 GLfloat rotb = 0.0f;
 GLfloat rotc = 0.0f;
 
+GLfloat flag = 0.0;
+
 GLfloat animateRotaion = 0.0f;
+
+GLfloat ballx = 0.0f;
+GLfloat ballz = 10.0f;
 
 //Move the exvironment
 GLfloat moveX = 0.0f;
@@ -148,7 +155,14 @@ void init() {
 }
 
 void Timer(int x) {
-    animateRotaion += animateRotaion >= 360.0 ? -animateRotaion : 5;
+    //animateRotaion += animateRotaion >= 360.0 ? -animateRotaion : 5;
+    if (flag == 1.0) {
+        if (ballz >= -8.0) {
+            ballz = ballz - 1;
+        }
+    }
+    
+    
     glutPostRedisplay();
 
     glutTimerFunc(60, Timer, 1);
@@ -196,7 +210,7 @@ void drawAxes() {
 void ball() {
     glPushMatrix();
     glColor3f(0.0f, 1.0f, 1.0f);
-    glTranslatef(0.0, 1, 12.0);
+    glTranslatef(ballx, 1, ballz);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[BALL]);
@@ -424,6 +438,12 @@ void keyBoadrd(unsigned char key, int x, int y) {
         camX += 0.5f;
     if (key == 'd')
         camX -= 0.5;
+    if (key == 'm')
+        flag = 1.0; //fault
+    if (key == 'g')
+        ballx -= 1;
+    if (key == 'h')
+        ballx += 1;
 
     glutPostRedisplay();
 }
@@ -442,9 +462,13 @@ void changeSize(GLsizei w, GLsizei h) {
 }
 
 int main(int argc, char** argv) {
+
     glutInit(&argc, argv);
+
     glutInitWindowSize(600, 600);
+
     glutCreateWindow("Bowling Animation");
+
     glutPositionWindow(150, 150);
 
     glutDisplayFunc(display);
@@ -452,13 +476,17 @@ int main(int argc, char** argv) {
     glutReshapeFunc(changeSize);
 
     glutSpecialFunc(keyboardSpecial);
+
     glutKeyboardFunc(keyBoadrd);
     
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     
-    //glutTimerFunc(60.0, Timer, 1);
     
+    glutTimerFunc(60.0, Timer, 1);
+
+
     init();
+
     glutMainLoop();
 
     return 1;
