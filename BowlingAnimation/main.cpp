@@ -13,7 +13,8 @@
 #define BALL 3
 #define SIDES 4
 #define FLOOR_LINE 5
-#define TEXTURE_COUNT 6
+#define WALL 6
+#define TEXTURE_COUNT 7
 
 #define SPACEBAR 32
 
@@ -130,6 +131,7 @@ void loadExternalTextures()
     image[BALL] = getbmp("Textures/ball.bmp");
     image[SIDES] = getbmp("Textures/sides.bmp");
     image[FLOOR_LINE] = getbmp("Textures/floor_line.bmp");
+    image[WALL] = getbmp("Textures/wall.bmp");
 
     for (int i = 0; i < TEXTURE_COUNT; i++) {
         glBindTexture(GL_TEXTURE_2D, texture[i]);
@@ -157,7 +159,7 @@ void init() {
 }
 
 void Timer(int x) {
-    //animateRotaion += animateRotaion >= 360.0 ? -animateRotaion : 5;
+
     if (flag == 1.0) {
         if (ballz >= -8.0) {
             ballz = ballz - 1;
@@ -166,11 +168,7 @@ void Timer(int x) {
             cout << ballrotz;
             ballrotz -= 20;
         }
-        
-
     }
-    
-    
     
     glutPostRedisplay();
 
@@ -178,6 +176,7 @@ void Timer(int x) {
 }
 
 void DrawGrid() {
+
     GLfloat ext = 20.0f;
     GLfloat step = 1.0f;
     GLfloat yGrid = -0.4f;
@@ -198,6 +197,7 @@ void DrawGrid() {
 }
 
 void drawAxes() {
+
     glBegin(GL_LINES);
 
     glColor3f(1.0, 0.0, 0.0);
@@ -217,6 +217,7 @@ void drawAxes() {
 }
 
 void ball() {
+
     glPushMatrix();
     glColor3f(0.0f, 1.0f, 1.0f);
     glTranslatef(ballx, 1, ballz);
@@ -246,12 +247,10 @@ void drawPin(GLfloat x, GLfloat y, GLfloat z) {
     glRotatef(0, 0, 1, 0);
     glScalef(0.9, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    //glutSolidSphere(0.5, 20, 20);
     
     GLUquadric* qobj = gluNewQuadric();
     gluQuadricTexture(qobj, GL_TRUE);
     gluSphere(qobj, 0.5, 20, 20);
-    //gluDeleteQuadric(qobj);
     
     glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
@@ -265,7 +264,6 @@ void drawPin(GLfloat x, GLfloat y, GLfloat z) {
     glRotatef(0, 0, 1, 0);
     glScalef(0.8, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    //glutSolidSphere(0.3, 20, 20);
     
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[PIN]);
@@ -368,7 +366,7 @@ void wall() {
 
     glEnable(GL_TEXTURE_2D);
 
-    glBindTexture(GL_TEXTURE_2D, texture[FLOOR]);
+    glBindTexture(GL_TEXTURE_2D, texture[WALL]);
 
     glBegin(GL_QUADS);
 
@@ -383,44 +381,6 @@ void wall() {
 
     glDisable(GL_TEXTURE_2D);
 }
-
-
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glRotatef(180.0, 0.0, 1.0, 0.0);
-    //glRotatef(-30.0f, 0.0, 1.0, 0.0);
-    
-    glPushMatrix();
-
-    //camera movements
-    gluLookAt(0.0 + camX, 2.0f + camY, 5.0f + camZ, 0, 0, 0, 0, 1.0, 0);
-
-    //move the frame
-    glTranslatef(moveX, moveY, moveZ);
-
-    glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
-    glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
-    glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
-
-    floor();
-
-    //wall();
-
-    drawAxes();
-    
-    DrawGrid();
-    
-    ball();
-    
-    pins();
-
-    glPopMatrix();
-
-    glutSwapBuffers();
-
-    glFlush();
-}
-
 void keyboardSpecial(int key, int x, int y) {
     if (key == GLUT_KEY_UP) {
         moveZ += 1;
@@ -435,7 +395,7 @@ void keyboardSpecial(int key, int x, int y) {
     if (key == GLUT_KEY_RIGHT) {
         rotateY -= 5;
     }
- 
+
     glutPostRedisplay();
 }
 
@@ -470,6 +430,46 @@ void changeSize(GLsizei w, GLsizei h) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
+
+
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glRotatef(180.0, 0.0, 1.0, 0.0);
+    //glRotatef(-30.0f, 0.0, 1.0, 0.0);
+    
+    glPushMatrix();
+
+    //camera movements
+    gluLookAt(0.0 + camX, 2.0f + camY, 5.0f + camZ, 0, 0, 0, 0, 1.0, 0);
+
+    //move the frame
+    glTranslatef(moveX, moveY, moveZ);
+
+    glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
+    glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
+
+    floor();
+
+    wall();
+
+    drawAxes();
+    
+    DrawGrid();
+    
+    ball();
+    
+    pins();
+
+    glPopMatrix();
+
+    glutSwapBuffers();
+
+    glFlush();
+}
+
+
 
 int main(int argc, char** argv) {
 
