@@ -16,8 +16,6 @@
 #define WALL 6
 #define TEXTURE_COUNT 7
 
-#define SPACEBAR 32
-
 GLfloat windowW = 20;
 GLfloat windowH = 20;
 GLfloat rota = 0.0f;
@@ -408,7 +406,7 @@ void keyBoadrd(unsigned char key, int x, int y) {
         camX += 0.5f;
     if (key == 'd')
         camX -= 0.5;
-    if (key == 'm')
+    if (key == ' ')
         flag = 1.0; //fault
     if (key == 'g')
         ballx -= 1;
