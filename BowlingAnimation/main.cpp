@@ -159,13 +159,11 @@ void init() {
 void Timer(int x) {
 
     if (flag == 1.0) {
-        if (ballz >= -8.0) {
+        if (ballz >= -12.0) {
             ballz = ballz - 1;
+            ballrotz -= 15;
         }
-        if (ballrotz >= -360.0) {
-            cout << ballrotz;
-            ballrotz -= 20;
-        }
+        
     }
     
     glutPostRedisplay();
@@ -280,21 +278,62 @@ void pins() {
 
     glPushMatrix();
 
-    drawPin(0, 0.75, -10);
+    drawPin(-40, 0.75, -14);
 
-    drawPin(0.8, 0.75, -11);
-    drawPin(-0.8, 0.75, -11);
+    drawPin(-39.2, 0.75, -15);
+    drawPin(-40.8, 0.75, -15);
+
+    drawPin(0 - 40, 0.75, -16);
+    drawPin(1.6 - 40, 0.75, -16);
+    drawPin(-1.6 - 40, 0.75, -16);
+
+    drawPin(0.8 - 40, 0.75, -17);
+    drawPin(-0.8 - 40, 0.75, -17);
+    drawPin(-2.4 - 40, 0.75, -17);
+    drawPin(2.4 - 40, 0.75, -17);
+
+    glPopMatrix();
+
+    //--------------------------------------
+
+    glPushMatrix();
+
+    drawPin(0, 0.75, -14);
+
+    drawPin(0.8, 0.75, -15);
+    drawPin(-0.8, 0.75, -15);
     
-    drawPin(0, 0.75, -12);
-    drawPin(1.6, 0.75, -12);
-    drawPin(-1.6, 0.75, -12);
+    drawPin(0, 0.75, -16);
+    drawPin(1.6, 0.75, -16);
+    drawPin(-1.6, 0.75, -16);
     
-    drawPin(0.8, 0.75, -13);
-    drawPin(-0.8, 0.75, -13);
-    drawPin(-2.4, 0.75, -13);
-    drawPin(2.4, 0.75, -13);
+    drawPin(0.8, 0.75, -17);
+    drawPin(-0.8, 0.75, -17);
+    drawPin(-2.4, 0.75, -17);
+    drawPin(2.4, 0.75, -17);
     
     glPopMatrix();
+
+    //--------------------------------------
+
+    glPushMatrix();
+
+    drawPin(0 + 40, 0.75, -14);
+
+    drawPin(0.8 + 40, 0.75, -15);
+    drawPin(-0.8 + 40, 0.75, -15);
+
+    drawPin(0 + 40, 0.75, -16);
+    drawPin(1.6 + 40, 0.75, -16);
+    drawPin(-1.6 + 40, 0.75, -16);
+
+    drawPin(0.8 + 40, 0.75, -17);
+    drawPin(-0.8 + 40, 0.75, -17);
+    drawPin(-2.4 + 40, 0.75, -17);
+    drawPin(2.4 + 40, 0.75, -17);
+
+    glPopMatrix();
+    
 }
 
 void floor() {
