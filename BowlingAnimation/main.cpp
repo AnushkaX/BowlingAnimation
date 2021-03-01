@@ -13,9 +13,8 @@
 #define BALL 3
 #define SIDES 4
 #define FLOOR_LINE 5
-#define TEXTURE_COUNT 6
-
-#define SPACEBAR 32
+#define WALL 6
+#define TEXTURE_COUNT 7
 
 GLfloat windowW = 20;
 GLfloat windowH = 20;
@@ -24,6 +23,8 @@ GLfloat rotb = 0.0f;
 GLfloat rotc = 0.0f;
 
 GLfloat flag = 0.0;
+
+GLfloat ballrotz = 0.0;
 
 GLfloat animateRotaion = 0.0f;
 
@@ -128,6 +129,7 @@ void loadExternalTextures()
     image[BALL] = getbmp("Textures/ball.bmp");
     image[SIDES] = getbmp("Textures/sides.bmp");
     image[FLOOR_LINE] = getbmp("Textures/floor_line.bmp");
+    image[WALL] = getbmp("Textures/wall.bmp");
 
     for (int i = 0; i < TEXTURE_COUNT; i++) {
         glBindTexture(GL_TEXTURE_2D, texture[i]);
@@ -155,13 +157,14 @@ void init() {
 }
 
 void Timer(int x) {
-    //animateRotaion += animateRotaion >= 360.0 ? -animateRotaion : 5;
+
     if (flag == 1.0) {
-        if (ballz >= -8.0) {
+        if (ballz >= -12.0) {
             ballz = ballz - 1;
+            ballrotz -= 15;
         }
+        
     }
-    
     
     glutPostRedisplay();
 
@@ -169,6 +172,7 @@ void Timer(int x) {
 }
 
 void DrawGrid() {
+
     GLfloat ext = 20.0f;
     GLfloat step = 1.0f;
     GLfloat yGrid = -0.4f;
@@ -189,6 +193,7 @@ void DrawGrid() {
 }
 
 void drawAxes() {
+
     glBegin(GL_LINES);
 
     glColor3f(1.0, 0.0, 0.0);
@@ -208,10 +213,12 @@ void drawAxes() {
 }
 
 void ball() {
+
     glPushMatrix();
     glColor3f(0.0f, 1.0f, 1.0f);
     glTranslatef(ballx, 1, ballz);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
+    glRotatef(ballrotz, 1.0, 0.0, 0.0);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[BALL]);
 
@@ -236,12 +243,10 @@ void drawPin(GLfloat x, GLfloat y, GLfloat z) {
     glRotatef(0, 0, 1, 0);
     glScalef(0.9, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    //glutSolidSphere(0.5, 20, 20);
     
     GLUquadric* qobj = gluNewQuadric();
     gluQuadricTexture(qobj, GL_TRUE);
     gluSphere(qobj, 0.5, 20, 20);
-    //gluDeleteQuadric(qobj);
     
     glDisable(GL_CLIP_PLANE0);
     glPopMatrix();
@@ -255,7 +260,6 @@ void drawPin(GLfloat x, GLfloat y, GLfloat z) {
     glRotatef(0, 0, 1, 0);
     glScalef(0.8, 1.75, 1);
     glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    //glutSolidSphere(0.3, 20, 20);
     
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[PIN]);
@@ -274,21 +278,62 @@ void pins() {
 
     glPushMatrix();
 
-    drawPin(0, 0.75, -10);
+    drawPin(-40, 0.75, -14);
 
-    drawPin(0.8, 0.75, -11);
-    drawPin(-0.8, 0.75, -11);
+    drawPin(-39.2, 0.75, -15);
+    drawPin(-40.8, 0.75, -15);
+
+    drawPin(0 - 40, 0.75, -16);
+    drawPin(1.6 - 40, 0.75, -16);
+    drawPin(-1.6 - 40, 0.75, -16);
+
+    drawPin(0.8 - 40, 0.75, -17);
+    drawPin(-0.8 - 40, 0.75, -17);
+    drawPin(-2.4 - 40, 0.75, -17);
+    drawPin(2.4 - 40, 0.75, -17);
+
+    glPopMatrix();
+
+    //--------------------------------------
+
+    glPushMatrix();
+
+    drawPin(0, 0.75, -14);
+
+    drawPin(0.8, 0.75, -15);
+    drawPin(-0.8, 0.75, -15);
     
-    drawPin(0, 0.75, -12);
-    drawPin(1.6, 0.75, -12);
-    drawPin(-1.6, 0.75, -12);
+    drawPin(0, 0.75, -16);
+    drawPin(1.6, 0.75, -16);
+    drawPin(-1.6, 0.75, -16);
     
-    drawPin(0.8, 0.75, -13);
-    drawPin(-0.8, 0.75, -13);
-    drawPin(-2.4, 0.75, -13);
-    drawPin(2.4, 0.75, -13);
+    drawPin(0.8, 0.75, -17);
+    drawPin(-0.8, 0.75, -17);
+    drawPin(-2.4, 0.75, -17);
+    drawPin(2.4, 0.75, -17);
     
     glPopMatrix();
+
+    //--------------------------------------
+
+    glPushMatrix();
+
+    drawPin(0 + 40, 0.75, -14);
+
+    drawPin(0.8 + 40, 0.75, -15);
+    drawPin(-0.8 + 40, 0.75, -15);
+
+    drawPin(0 + 40, 0.75, -16);
+    drawPin(1.6 + 40, 0.75, -16);
+    drawPin(-1.6 + 40, 0.75, -16);
+
+    drawPin(0.8 + 40, 0.75, -17);
+    drawPin(-0.8 + 40, 0.75, -17);
+    drawPin(-2.4 + 40, 0.75, -17);
+    drawPin(2.4 + 40, 0.75, -17);
+
+    glPopMatrix();
+    
 }
 
 void floor() {
@@ -298,15 +343,51 @@ void floor() {
     glBindTexture(GL_TEXTURE_2D, texture[FLOOR]);
 
     glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(-47, 0.001, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-47, 0.001, 15);
+    glTexCoord2f(1.0, 1.0); glVertex3f(-33, 0.001, 15);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-33, 0.001, -20);
     
     glTexCoord2f(0.0, 0.0); glVertex3f(-7, 0.001, -20);
     glTexCoord2f(1.0, 0.0); glVertex3f(-7, 0.001, 15);
     glTexCoord2f(1.0, 1.0); glVertex3f(7, 0.001, 15);
     glTexCoord2f(0.0, 1.0); glVertex3f(7, 0.001, -20);
 
+    glTexCoord2f(0.0, 0.0); glVertex3f(47, 0.001, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(47, 0.001, 15);
+    glTexCoord2f(1.0, 1.0); glVertex3f(33, 0.001, 15);
+    glTexCoord2f(0.0, 1.0); glVertex3f(33, 0.001, -20);
+
     glEnd();
 
     //Sides
+
+    //---------------------------------------------------------------
+    glBindTexture(GL_TEXTURE_2D, texture[SIDES]);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(-49, 0.001, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-49, 0.001, 15);
+    glTexCoord2f(1.0, 1.0); glVertex3f(-47, 0.001, 15);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-47, 0.001, -20);
+
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, texture[SIDES]);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(-33, 0.001, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-33, 0.001, 15);
+    glTexCoord2f(1.0, 1.0); glVertex3f(-31, 0.001, 15);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-31, 0.001, -20);
+
+    glEnd();
+
+    //---------------------------------------------------------------
+
     glBindTexture(GL_TEXTURE_2D, texture[SIDES]);
 
     glBegin(GL_QUADS);
@@ -329,25 +410,85 @@ void floor() {
 
     glEnd();
 
+    //---------------------------------------------------------------
+
+    glBindTexture(GL_TEXTURE_2D, texture[SIDES]);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(31, 0.001, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(31, 0.001, 15);
+    glTexCoord2f(1.0, 1.0); glVertex3f(33, 0.001, 15);
+    glTexCoord2f(0.0, 1.0); glVertex3f(33, 0.001, -20);
+
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, texture[SIDES]);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(47, 0.001, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(47, 0.001, 15);
+    glTexCoord2f(1.0, 1.0); glVertex3f(49, 0.001, 15);
+    glTexCoord2f(0.0, 1.0); glVertex3f(49, 0.001, -20);
+
+    glEnd();
+
+    //---------------------------------------------------------------
+
     //Floor
     glBindTexture(GL_TEXTURE_2D, texture[FLOOR1]);
     glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(20, 0, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(20, 0, 20);
+    glTexCoord2f(1.0, 1.0); glVertex3f(60, 0, 20);
+    glTexCoord2f(0.0, 1.0); glVertex3f(60, 0, -20);
     
     glTexCoord2f(0.0, 0.0); glVertex3f(-20, 0, -20);
     glTexCoord2f(1.0, 0.0); glVertex3f(-20, 0, 20);
     glTexCoord2f(1.0, 1.0); glVertex3f(20, 0, 20);
     glTexCoord2f(0.0, 1.0); glVertex3f(20, 0, -20);
 
+    glTexCoord2f(0.0, 0.0); glVertex3f(-20, 0, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-20, 0, 20);
+    glTexCoord2f(1.0, 1.0); glVertex3f(-60, 0, 20);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-60, 0, -20);
+
     glEnd();
 
     //Floor_Line
+
     glBindTexture(GL_TEXTURE_2D, texture[FLOOR_LINE]);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(-47, 0.01, 10);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-47, 0.01, 10.3);
+    glTexCoord2f(1.0, 1.0); glVertex3f(-33, 0.01, 10.3);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-33, 0.01, 10);
+
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, texture[FLOOR_LINE]);
+
     glBegin(GL_QUADS);
     
     glTexCoord2f(0.0, 0.0); glVertex3f(-7, 0.01, 10);
     glTexCoord2f(1.0, 0.0); glVertex3f(-7, 0.01, 10.3);
     glTexCoord2f(1.0, 1.0); glVertex3f(7, 0.01, 10.3);
     glTexCoord2f(0.0, 1.0); glVertex3f(7, 0.01, 10);
+
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, texture[FLOOR_LINE]);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(33, 0.01, 10);
+    glTexCoord2f(1.0, 0.0); glVertex3f(33, 0.01, 10.3);
+    glTexCoord2f(1.0, 1.0); glVertex3f(47, 0.01, 10.3);
+    glTexCoord2f(0.0, 1.0); glVertex3f(47, 0.01, 10);
 
     glEnd();
 
@@ -358,7 +499,7 @@ void wall() {
 
     glEnable(GL_TEXTURE_2D);
 
-    glBindTexture(GL_TEXTURE_2D, texture[FLOOR]);
+    glBindTexture(GL_TEXTURE_2D, texture[WALL]);
 
     glBegin(GL_QUADS);
 
@@ -366,51 +507,23 @@ void wall() {
 
     glTexCoord2f(0.0, 0.0); glVertex3f(-20, 20, -20);
     glTexCoord2f(1.0, 0.0); glVertex3f(-20, 0, -20);
+    glTexCoord2f(1.0, 1.0); glVertex3f(-60, 0, -20);
+    glTexCoord2f(0.0, 1.0); glVertex3f(-60, 20, -20);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(-20, 20, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-20, 0, -20);
     glTexCoord2f(1.0, 1.0); glVertex3f(20, 0, -20);
     glTexCoord2f(0.0, 1.0); glVertex3f(20, 20, -20);
+
+    glTexCoord2f(0.0, 0.0); glVertex3f(20, 20, -20);
+    glTexCoord2f(1.0, 0.0); glVertex3f(20, 0, -20);
+    glTexCoord2f(1.0, 1.0); glVertex3f(60, 0, -20);
+    glTexCoord2f(0.0, 1.0); glVertex3f(60, 20, -20);
 
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
 }
-
-
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glRotatef(180.0, 0.0, 1.0, 0.0);
-    //glRotatef(-30.0f, 0.0, 1.0, 0.0);
-    
-    glPushMatrix();
-
-    //camera movements
-    gluLookAt(0.0 + camX, 2.0f + camY, 5.0f + camZ, 0, 0, 0, 0, 1.0, 0);
-
-    //move the frame
-    glTranslatef(moveX, moveY, moveZ);
-
-    glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
-    glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
-    glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
-
-    floor();
-
-    //wall();
-
-    drawAxes();
-    
-    DrawGrid();
-    
-    ball();
-    
-    pins();
-
-    glPopMatrix();
-
-    glutSwapBuffers();
-
-    glFlush();
-}
-
 void keyboardSpecial(int key, int x, int y) {
     if (key == GLUT_KEY_UP) {
         moveZ += 1;
@@ -425,7 +538,7 @@ void keyboardSpecial(int key, int x, int y) {
     if (key == GLUT_KEY_RIGHT) {
         rotateY -= 5;
     }
- 
+
     glutPostRedisplay();
 }
 
@@ -438,7 +551,7 @@ void keyBoadrd(unsigned char key, int x, int y) {
         camX += 0.5f;
     if (key == 'd')
         camX -= 0.5;
-    if (key == 'm')
+    if (key == ' ')
         flag = 1.0; //fault
     if (key == 'g')
         ballx -= 1;
@@ -460,6 +573,46 @@ void changeSize(GLsizei w, GLsizei h) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
+
+
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glRotatef(180.0, 0.0, 1.0, 0.0);
+    //glRotatef(-30.0f, 0.0, 1.0, 0.0);
+    
+    glPushMatrix();
+
+    //camera movements
+    gluLookAt(0.0 + camX, 2.0f + camY, 5.0f + camZ, 0, 0, 0, 0, 1.0, 0);
+
+    //move the frame
+    glTranslatef(moveX, moveY, moveZ);
+
+    glRotatef(rotateX, 1.0f, 0.0f, 0.0f);
+    glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
+    glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
+
+    floor();
+
+    wall();
+
+    drawAxes();
+    
+    DrawGrid();
+    
+    ball();
+    
+    pins();
+
+    glPopMatrix();
+
+    glutSwapBuffers();
+
+    glFlush();
+}
+
+
 
 int main(int argc, char** argv) {
 
