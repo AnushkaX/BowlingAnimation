@@ -419,16 +419,6 @@ void floor() {
     glEnd();
 
     //Floor_Line
-    glBindTexture(GL_TEXTURE_2D, texture[FLOOR_LINE]);
-
-    glBegin(GL_QUADS);
-    
-    glTexCoord2f(0.0, 0.0); glVertex3f(-7, 0.01, 10);
-    glTexCoord2f(1.0, 0.0); glVertex3f(-7, 0.01, 10.3);
-    glTexCoord2f(1.0, 1.0); glVertex3f(7, 0.01, 10.3);
-    glTexCoord2f(0.0, 1.0); glVertex3f(7, 0.01, 10);
-
-    glEnd();
 
     glBindTexture(GL_TEXTURE_2D, texture[FLOOR_LINE]);
 
@@ -438,6 +428,17 @@ void floor() {
     glTexCoord2f(1.0, 0.0); glVertex3f(-47, 0.01, 10.3);
     glTexCoord2f(1.0, 1.0); glVertex3f(-33, 0.01, 10.3);
     glTexCoord2f(0.0, 1.0); glVertex3f(-33, 0.01, 10);
+
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, texture[FLOOR_LINE]);
+
+    glBegin(GL_QUADS);
+    
+    glTexCoord2f(0.0, 0.0); glVertex3f(-7, 0.01, 10);
+    glTexCoord2f(1.0, 0.0); glVertex3f(-7, 0.01, 10.3);
+    glTexCoord2f(1.0, 1.0); glVertex3f(7, 0.01, 10.3);
+    glTexCoord2f(0.0, 1.0); glVertex3f(7, 0.01, 10);
 
     glEnd();
 
