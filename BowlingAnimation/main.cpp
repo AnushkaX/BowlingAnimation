@@ -46,6 +46,9 @@ GLfloat camX = 0.0f;
 GLfloat camY = 0.0f;
 GLfloat camZ = 0.0f;
 
+//Lights
+GLfloat light = 0;
+
 
 GLfloat rotation = 90.0;
 double x, y, angle;
@@ -141,19 +144,143 @@ void loadExternalTextures()
     }
 }
 
+void initLighting() {
+
+    //Decalring the Ambient, Diffuse components of the LIght_0 and the position in the eye coordinate system
+    GLfloat L0_Ambient[] = { 0.4, 0.4, 0.4, 1.0 };
+    GLfloat L0_Diffuse[] = { 0.7, 0.7, 0.7, 1.0 };
+    GLfloat L0_postion[] = { 0, 30, 4, 1.0 };
+
+    /*glPushMatrix();
+    glTranslatef(0, 30, 4);
+    glutSolidSphere(1, 100, 100);
+    glPopMatrix();*/
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, L0_Ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, L0_Diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, L0_postion);
+
+    //1
+    GLfloat L1_Ambient[] = { 0.5, 0.5, 0.5, 1.0 };
+    GLfloat L1_Diffuse[] = { 0.7, 0.7, 0.7, 1.0 };
+    GLfloat L1_Specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat L1_postion[] = { 0,40,4 , 1.0 };
+
+    glLightfv(GL_LIGHT1, GL_AMBIENT, L1_Ambient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, L1_Diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, L1_Specular);
+    glLightfv(GL_LIGHT1, GL_POSITION, L1_postion);
+
+    /*glPushMatrix();
+    glTranslatef(0, 40, 4);
+    glutSolidSphere(0.4, 100, 100);
+    glPopMatrix();*/
+
+    //Declaration of the ligt reflecting properties for the materials
+    GLfloat specularReflectance[] = { 1.0, 1.0, 1.0, 1.0 };
+    glMaterialfv(GL_FRONT, GL_SPECULAR, specularReflectance);
+    glMateriali(GL_FRONT, GL_SHININESS, 100);
+
+
+    GLfloat L_Ambient[] = { 0.9, 0.9, 0.9, 1.0 };
+    GLfloat L_Diffuse[] = { 0.9, 0.9, 0.9, 1.0 };
+    GLfloat L_Specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat L_SpotDirection[] = { 0.0, -1.0, 0.0 };
+
+
+    //2
+    GLfloat L2_postion[] = { 40, 22, -6, 1.0 };
+
+    /*glPushMatrix();
+    glTranslatef(40, 20, -6);
+    glutSolidSphere(0.4, 100, 100);
+    glPopMatrix();*/
+
+    glLightfv(GL_LIGHT2, GL_AMBIENT, L_Ambient);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, L_Diffuse);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, L_Specular);
+    glLightfv(GL_LIGHT2, GL_POSITION, L2_postion);
+
+    glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, L_SpotDirection);
+    glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 30.0);
+
+
+    //3
+    GLfloat L3_postion[] = { -10, 22, 4, 1.0 };
+
+    /*glPushMatrix();
+    glTranslatef(-10, 20, 4);
+    glutSolidSphere(0.4, 100, 100);
+    glPopMatrix();*/
+
+    glLightfv(GL_LIGHT3, GL_AMBIENT, L_Ambient);
+    glLightfv(GL_LIGHT3, GL_DIFFUSE, L_Diffuse);
+    glLightfv(GL_LIGHT3, GL_SPECULAR, L_Specular);
+    glLightfv(GL_LIGHT3, GL_POSITION, L3_postion);
+
+    glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, L_SpotDirection);
+    glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, 30.0);
+
+
+    //4
+    GLfloat L4_postion[] = { 10, 22, 4, 1.0 };
+
+    /*glPushMatrix();
+    glTranslatef(10, 20, 4);
+    glutSolidSphere(0.4, 100, 100);
+    glPopMatrix();*/
+
+    glLightfv(GL_LIGHT4, GL_AMBIENT, L_Ambient);
+    glLightfv(GL_LIGHT4, GL_DIFFUSE, L_Diffuse);
+    glLightfv(GL_LIGHT4, GL_SPECULAR, L_Specular);
+    glLightfv(GL_LIGHT4, GL_POSITION, L4_postion);
+
+    glLightfv(GL_LIGHT4, GL_SPOT_DIRECTION, L_SpotDirection);
+    glLightf(GL_LIGHT4, GL_SPOT_CUTOFF, 30.0);
+    
+
+}
+
 void init() {
+
     glClearColor(0.0, 0.0, 0.0, 1.0);
+    glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
-    glEnable(GL_DEPTH_TEST);
+
+    GLfloat globalAmbient[] = { 0.4, 0.4, 0.4, 1.0 };
 
     glGenTextures(TEXTURE_COUNT, texture);
     loadExternalTextures();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    //--------------------
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_BLEND);
+
+    glEnable(GL_LIGHTING);
+
+    glShadeModel(GL_SMOOTH);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_NORMALIZE);
+    //---------------------
+
     
+
+
     glLineWidth(1.0);
     glPolygonMode(GL_FRONT, GL_FILL);
     glPolygonMode(GL_BACK, GL_FILL);
 
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 void Timer(int x) {
@@ -163,7 +290,6 @@ void Timer(int x) {
             ballz = ballz - 1;
             ballrotz -= 15;
         }
-        
     }
     
     glutPostRedisplay();
@@ -234,6 +360,8 @@ void ball() {
 void drawPin(GLfloat x, GLfloat y, GLfloat z) {
 
     glPushMatrix();
+    glPushMatrix();
+
     glColor3f(1.0f, 1.0f, 1.0f);
     GLdouble plane1[] = { 0, 1.1, 0, 0 };
     glClipPlane(GL_CLIP_PLANE0, plane1);
@@ -270,6 +398,7 @@ void drawPin(GLfloat x, GLfloat y, GLfloat z) {
 
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_CLIP_PLANE0);
+    glPopMatrix();
     glPopMatrix();
 
 }
@@ -524,7 +653,9 @@ void wall() {
 
     glDisable(GL_TEXTURE_2D);
 }
+
 void keyboardSpecial(int key, int x, int y) {
+
     if (key == GLUT_KEY_UP) {
         moveZ += 1;
     }
@@ -543,6 +674,7 @@ void keyboardSpecial(int key, int x, int y) {
 }
 
 void keyBoadrd(unsigned char key, int x, int y) {
+
     if (key == 'w')
         camY += 0.5f;
     if (key == 's')
@@ -557,6 +689,42 @@ void keyBoadrd(unsigned char key, int x, int y) {
         ballx -= 1;
     if (key == 'h')
         ballx += 1;
+
+    //light
+    if (key == '5')
+        glEnable(GL_LIGHT0);
+    if (key == '%')
+        glDisable(GL_LIGHT0);
+
+    if (key == '1')
+        light = 0;
+    if (key == '2')
+        light = 1;
+    if (key == '3')
+        light = 2;
+    if (key == '4')
+        light = 3;
+
+    if (light == 0) {
+        glDisable(GL_LIGHT2);
+        glDisable(GL_LIGHT3);
+        glDisable(GL_LIGHT4);
+    }
+    else if (light == 1) {
+        glEnable(GL_LIGHT2);
+        glDisable(GL_LIGHT3);
+        glDisable(GL_LIGHT4);
+    }
+    else if (light == 2) {
+        glDisable(GL_LIGHT2);
+        glEnable(GL_LIGHT3);
+        glDisable(GL_LIGHT4);
+    }
+    else if (light == 3) {
+        glDisable(GL_LIGHT2);
+        glDisable(GL_LIGHT3);
+        glEnable(GL_LIGHT4);
+    }
 
     glutPostRedisplay();
 }
@@ -574,9 +742,8 @@ void changeSize(GLsizei w, GLsizei h) {
     glLoadIdentity();
 }
 
-
-
 void display() {
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glRotatef(180.0, 0.0, 1.0, 0.0);
     //glRotatef(-30.0f, 0.0, 1.0, 0.0);
@@ -593,17 +760,33 @@ void display() {
     glRotatef(rotateY, 0.0f, 1.0f, 0.0f);
     glRotatef(rotateZ, 0.0f, 0.0f, 1.0f);
 
+    
+    initLighting();
+    
+
+    glPushMatrix();
     floor();
+    glPopMatrix();
 
+    glPushMatrix();
     wall();
+    glPopMatrix();
 
+    glPushMatrix();
     drawAxes();
-    
+    glPopMatrix();
+
+    glPushMatrix();
     DrawGrid();
+    glPopMatrix();
     
+    glPushMatrix();
     ball();
+    glPopMatrix();
     
+    glPushMatrix();
     pins();
+    glPopMatrix();
 
     glPopMatrix();
 
