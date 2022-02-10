@@ -19,12 +19,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="glut32.dll">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="glu32.dll">
-      <Filter>Source Files</Filter>
-    </None>
-  </ItemGroup>
 </Project>
